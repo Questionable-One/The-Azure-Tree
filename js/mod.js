@@ -21,7 +21,7 @@ let changelog = `<h1>Changelog:</h1><br>
 		- what do you think is in here???<br>
 		`
 
-let winText = `Congratulations on beating The Azure Tree!`
+let winText = `Congratulations on beating The Azure Tree, however it may receive updates so make sure to stay tuned!`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -63,7 +63,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280"))
+	return player.r.points.gte(new Decimal(1))
 }
 
 
