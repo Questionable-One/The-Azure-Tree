@@ -6,17 +6,23 @@ let modInfo = {
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal(10), // Used for hard resets and new players
+	initialStartPoints: new Decimal(0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
-	name: "New beginnings",
+	num: "0.1.1",
+	name: "Deep dreams",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.1.1: Deep dreams</h3><br>
+		- Sapphire layer<br>
+		- Added upgrades to Ruby<br>
+		- Buffed Iron Upgrade 4 and Copper Upgrade 4<br>
+		- Lowered the price of Gold Upgrade R<br>
+		<br>
 	<h3>v0.1: New beginnings</h3><br>
 		- what do you think is in here???<br>
 		`
@@ -48,8 +54,9 @@ function getPointGen() {
 	if (hasUpgrade('c', 15)) gain = gain.times(2)
 	if (hasUpgrade('c', 23)) gain = gain.times(2)
 	if (hasUpgrade('c', 24)) gain = gain.times(25)
-	if (hasUpgrade('i', 11)) gain = gain.times(3)
+	if (hasUpgrade('i', 11)) gain = gain.times(10)
 	if (hasUpgrade('cu', 11)) gain = gain.times(2)
+	if (hasUpgrade('r', 11)) gain = gain.times(upgradeEffect('r', 11))
 	return gain
 }
 
@@ -63,7 +70,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.r.points.gte(new Decimal(1))
+	return player.s.points.gte(new Decimal(1))
 }
 
 
