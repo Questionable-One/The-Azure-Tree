@@ -4,19 +4,22 @@ let modInfo = {
 	pointsName: "stone",
 	modFiles: ["layers.js", "tree.js"],
 
-	discordName: "",
-	discordLink: "",
+	discordName: "Eudaemonia's Attic",
+	discordLink: "https://discord.gg/VJWjWjA3q9",
 	initialStartPoints: new Decimal(0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.1",
-	name: "Deep dreams",
+	num: "0.1.1.1",
+	name: `"Deep" dreams`,
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.1.1.1: "Deep" dreams</h3><br>
+		- discord server yayayayaya<br>
+		<br>
 	<h3>v0.1.1: Deep dreams</h3><br>
 		- Sapphire layer<br>
 		- Added upgrades to Ruby<br>
@@ -27,7 +30,7 @@ let changelog = `<h1>Changelog:</h1><br>
 		- what do you think is in here???<br>
 		`
 
-let winText = `Congratulations on beating The Azure Tree, however it may receive updates so make sure to stay tuned!`
+let winText = `Congratulations on beating The Azure Tree!`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -70,7 +73,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.s.points.gte(new Decimal(1))
+	return player.points.gte(new Decimal("e280"))
 }
 
 
