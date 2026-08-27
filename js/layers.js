@@ -116,7 +116,7 @@ addLayer("c", {
             effect() { return player.g.unlocked = true },
             unlocked() { return hasUpgrade('c', 24) }
         },
-         31: {
+        31: {
             title: "Coal Upgrade 8",
             description: "Increase Iron & Gold generation to 10%",
             cost: new Decimal(5000000),
@@ -126,7 +126,7 @@ addLayer("c", {
             title: "Coal Upgrade 9",
             description: "Coal boosts itself at a low rate.",
             cost: new Decimal(10000000),
-             effect() {
+            effect() {
                 return player[this.layer].points.add(1).pow(0.05)
             },
             tooltip: "Formula: Coal+1^0.05",
@@ -219,7 +219,7 @@ addLayer("cu", {
     hotkeys: [
         { key: "u", description: "U: Reset for copper", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('c', 12) || hasUpgrade('cu', 11) || player.cu.points > 0 }
+    layerShown() { return hasUpgrade('c', 22) || hasUpgrade('cu', 11) || player.cu.points > 0 }
 })
 addLayer("i", {
     name: "iron", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -430,7 +430,7 @@ addLayer("r", {
         },
         13: {
             title: "Ruby Upgrade 3",
-            description: "Unlock more upgrades in the previous layers.",
+            description: "Unlock more upgrades in the previous trees.",
             cost: new Decimal(5),
             unlocked() { return hasUpgrade('r', 12) }
         },
