@@ -14,25 +14,25 @@ addLayer("c", {
     baseResource: "stone", // Name of resource prestige is based on
     baseAmount() { return player.points }, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
+    exponent: 0.49, // trol
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade('c', 13)) mult = mult.times(2)
-        if (hasUpgrade('i', 12)) mult = mult.times(3)
+        if (hasUpgrade('i', 12)) mult = mult.times(2)
         if (hasUpgrade('cu', 12)) mult = mult.times(5)
-if (hasUpgrade('i', 14)) mult = mult.times(upgradeEffect('i', 14))
+        if (hasUpgrade('i', 14)) mult = mult.times(upgradeEffect('i', 14))
         if (hasUpgrade('cu', 14)) mult = mult.times(upgradeEffect('cu', 14))
-        return mult
+        if (hasUpgrade('c', 32)) mult = mult.times(upgradeEffect('c', 32))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
     passiveGeneration() {
-        let total = new Decimal(0)
-        if (hasUpgrade('i', 13)) total = total.add(0.05)
-        if (hasUpgrade('cu', 13)) total = total.add(0.05)
-        if (hasUpgrade('g', 11)) total = total.add(0.9)
+        let total = 0
+        if (hasUpgrade('i', 13)) total += 0.05
+        if (hasUpgrade('cu', 13)) total += 0.05
+        if (hasUpgrade('g', 11)) total += 0.9
         return total
     },
     infoboxes: {
@@ -74,6 +74,7 @@ if (hasUpgrade('i', 14)) mult = mult.times(upgradeEffect('i', 14))
         21: {
             title: "Coal Upgrade I",
             description: "Unlock Iron, Increases the cost of Coal Upgrade C by 10x.",
+            tooltip: "Iron focuses on increased Stone gain.",
             cost() {
                 if (hasUpgrade('c', 22))
                     return new Decimal(300)
@@ -86,6 +87,7 @@ if (hasUpgrade('i', 14)) mult = mult.times(upgradeEffect('i', 14))
         22: {
             title: "Coal Upgrade C",
             description: "Unlock Copper, Increases the cost of Coal Upgrade I by 10x.",
+            tooltip: "Copper focuses on increased Coal gain.",
             cost() {
                 if (hasUpgrade('c', 21))
                     return new Decimal(300)
@@ -95,7 +97,7 @@ if (hasUpgrade('i', 14)) mult = mult.times(upgradeEffect('i', 14))
             effect() { return player.cu.unlocked = true },
             unlocked() { return hasUpgrade('c', 15) }
         },
-         23: {
+        23: {
             title: "Coal Upgrade 6",
             description: "Double your stone gain... again... again.",
             cost: new Decimal(750),
@@ -113,6 +115,23 @@ if (hasUpgrade('i', 14)) mult = mult.times(upgradeEffect('i', 14))
             cost: new Decimal(3000),
             effect() { return player.g.unlocked = true },
             unlocked() { return hasUpgrade('c', 24) }
+        },
+         31: {
+            title: "Coal Upgrade 8",
+            description: "Increase Iron & Gold generation to 10%",
+            cost: new Decimal(5000000),
+            unlocked() { return hasUpgrade('c', 25) && hasUpgrade('r', 13) }
+        },
+        32: {
+            title: "Coal Upgrade 9",
+            description: "Coal boosts itself at a low rate.",
+            cost: new Decimal(10000000),
+             effect() {
+                return player[this.layer].points.add(1).pow(0.05)
+            },
+            tooltip: "Formula: Coal+1^0.05",
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
+            unlocked() { return hasUpgrade('c', 31) }
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -141,11 +160,18 @@ addLayer("cu", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        //if (hasUpgrade('c', 13)) mult = mult.times(2)
+        if (hasUpgrade('g', 14)) mult = mult.times(3)
+        if (hasUpgrade('i', 15)) mult = mult.times(4)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
+    },
+    passiveGeneration() {
+        let total = 0
+        if (hasUpgrade('r', 12)) total += 0.01
+        if (hasUpgrade('c', 31)) total += 0.09
+        return total
     },
     infoboxes: {
         lore: {
@@ -171,23 +197,29 @@ addLayer("cu", {
             cost: new Decimal(5),
             unlocked() { return hasUpgrade('cu', 12) }
         },
-         14: {
+        14: {
             title: "Copper Upgrade 4",
-            description: "Copper boosts Gold and Coal at a low rate.",
+            description: "Copper boosts Gold and Coal.",
             cost: new Decimal(25),
             effect() {
-                return player[this.layer].points.add(1).pow(0.2)
+                return player[this.layer].points.add(1).pow(0.25)
             },
-            tooltip: "Formula: Copper+1^0.2",
+            tooltip: "Formula: Copper+1^0.25",
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
             unlocked() { return hasUpgrade('cu', 13) && hasUpgrade('g', 12) }
+        },
+        15: {
+            title: "Copper Upgrade 5",
+            description: "4x Iron & 2x Ruby",
+            cost: new Decimal(1000),
+            unlocked() { return hasUpgrade('cu', 14) && hasUpgrade('r', 13) }
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         { key: "u", description: "U: Reset for copper", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('c', 22) }
+    layerShown() { return hasUpgrade('c', 12) || hasUpgrade('cu', 11) || player.cu.points > 0 }
 })
 addLayer("i", {
     name: "iron", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -209,11 +241,18 @@ addLayer("i", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        //if (hasUpgrade('c', 13)) mult = mult.times(2)
+        if (hasUpgrade('g', 14)) mult = mult.times(3)
+        if (hasUpgrade('cu', 15)) mult = mult.times(4)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
+    },
+    passiveGeneration() {
+        let total = 0
+        if (hasUpgrade('r', 12)) total += 0.01
+        if (hasUpgrade('c', 31)) total += 0.09
+        return total
     },
     infoboxes: {
         lore: {
@@ -224,12 +263,12 @@ addLayer("i", {
     upgrades: {
         11: {
             title: "Iron Upgrade 1",
-            description: "Triple your stone gain.",
+            description: "10x stone gain.",
             cost: new Decimal(1),
         },
         12: {
             title: "Iron Upgrade 2",
-            description: "Triple your coal gain.",
+            description: "Double your coal gain.",
             cost: new Decimal(2),
             unlocked() { return hasUpgrade('i', 11) }
         },
@@ -241,21 +280,27 @@ addLayer("i", {
         },
         14: {
             title: "Iron Upgrade 4",
-            description: "Iron boosts Gold and Coal at a low rate.",
+            description: "Iron boosts Gold and Coal.",
             cost: new Decimal(25),
             effect() {
-                return player[this.layer].points.add(1).pow(0.2)
+                return player[this.layer].points.add(1).pow(0.25)
             },
-            tooltip: "Formula: Iron+1^0.2",
+            tooltip: "Formula: Iron+1^0.25",
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
             unlocked() { return hasUpgrade('i', 13) && hasUpgrade('g', 12) }
+        },
+        15: {
+            title: "Iron Upgrade 5",
+            description: "4x Copper & 2x Ruby",
+            cost: new Decimal(1000),
+            unlocked() { return hasUpgrade('i', 14) && hasUpgrade('r', 13) }
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         { key: "i", description: "I: Reset for iron", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('c', 21) }
+    layerShown() { return hasUpgrade('c', 21) || hasUpgrade('i', 11) || player.i.points > 0 }
 })
 addLayer("g", {
     name: "gold", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -305,15 +350,33 @@ addLayer("g", {
         13: {
             title: "Gold Upgrade R",
             description: "Unlock Ruby.",
-            cost: new Decimal(100),
+            cost: new Decimal(25),
+            effect() { return player.r.unlocked = true },
             unlocked() { return hasUpgrade('g', 12) }
+        },
+        14: {
+            title: "Gold Upgrade 3",
+            description: "3x Copper & Iron.",
+            cost: new Decimal(2500),
+            unlocked() { return hasUpgrade('r', 13) && hasUpgrade('g', 13) }
+        },
+        15: {
+            title: "Gold Upgrade 4",
+            description: "Gold boosts Coal.",
+            cost: new Decimal(5000),
+            effect() {
+                return player[this.layer].points.add(1).pow(0.5)
+            },
+            tooltip: "Formula: Gold+1^0.5",
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
+            unlocked() { return hasUpgrade('g', 14) }
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         { key: "g", description: "G: Reset for gold", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('c', 25) }
+    layerShown() { return hasUpgrade('c', 25) || hasUpgrade('g', 11) || player.g.points > 0 }
 })
 addLayer("r", {
     name: "ruby", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -335,6 +398,8 @@ addLayer("r", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasUpgrade('i', 15)) mult = mult.times(2)
+        if (hasUpgrade('cu', 15)) mult = mult.times(2)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -349,13 +414,81 @@ addLayer("r", {
     upgrades: {
         11: {
             title: "Ruby Upgrade 1",
-            description: "this is unfinished so you win 🥳",
+            description: "Here comes the upgrade you've been waiting for: Coal boosts Stone.",
+            effect() {
+                return player.c.points.add(1).pow(0.35)
+            },
+            tooltip: "Formula: Coal+1^0.35",
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
             cost: new Decimal(1),
+        },
+        12: {
+            title: "Ruby Upgrade 2",
+            description: "Quality of life, Generate 1% of Iron & Copper every second.",
+            cost: new Decimal(3),
+            unlocked() { return hasUpgrade('r', 11) }
+        },
+        13: {
+            title: "Ruby Upgrade 3",
+            description: "Unlock more upgrades in the previous layers.",
+            cost: new Decimal(5),
+            unlocked() { return hasUpgrade('r', 12) }
+        },
+        14: {
+            title: "Ruby Upgrade S",
+            description: "Unlock Sapphire.",
+            cost: new Decimal(100),
+            effect() { return player.s.unlocked = true },
+            unlocked() { return hasUpgrade('r', 13) }
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         { key: "r", description: "R: Reset for ruby", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('g', 13) }
+    layerShown() { return hasUpgrade('g', 13) || hasUpgrade('r', 11) || player.r.points > 0 }
+})
+addLayer("s", {
+    name: "sapphire", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "S", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() {
+        return {
+            unlocked: false,
+            points: new Decimal(0),
+        }
+    },
+    color: "#1d97d8",
+    requires: new Decimal(50), // Can be a function that takes requirement increases into account
+    resource: "sapphire", // Name of prestige currency
+    baseResource: "ruby", // Name of resource prestige is based on
+    baseAmount() { return player.r.points }, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.2, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+    infoboxes: {
+        lore: {
+            title: "Layer 2: Dreams | Sapphire",
+            body() { return `A deep-blue gemstone which only is really good for cosmetic purposes. Though wizards have found beneficial usages for all of the gemstones. When a wizard is heavily influenced by the emotions inflicted by [REDACTED]'s sorrow, it is capable of clearing the mind and soothing the thoughts of those influenced by its power.` },
+        },
+    },
+    upgrades: {
+        11: {
+            title: "Sapphire Upgrade 1",
+            description: "you win (2)",
+            cost: new Decimal(1),
+        },
+
+    },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        { key: "s", description: "S: Reset for sapphire", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+    ],
+    layerShown() { return hasUpgrade('r', 14) || hasUpgrade('s', 11) || player.s.points > 0 }
 })
