@@ -1,3 +1,86 @@
+addLayer("ach", {
+    name: "achievements", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "★", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() {
+        return {
+            unlocked: true
+        }
+    },
+    color: "#fbff00",
+    resource: "achievements", // Name of prestige currency
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    infoboxes: {
+        lore: {
+            title: "Layer ?: Bonus | Achievements",
+            body() { return `Unfortunately, Azure Mines doesn't have enough achievements to really fit all of these achievement names, sorry...` },
+        },
+    },
+    achievements: {
+        11: {
+            name: "It's Alive!",
+            tooltip: "Get your first piece of coal.",
+            done() { return player.c.points.gte(new Decimal(1)) }
+        },
+        12: {
+            name: "Take a pick",
+            tooltip: "Choose between Coal Upgrade I and Coal Upgrade C.",
+            done() { return hasUpgrade('c', 21) || hasUpgrade('c', 22) }
+        },
+        13: {
+            name: "Iron man",
+            tooltip: "Reset for iron.",
+            done() { return player.i.points.gte(new Decimal(1)) }
+        },
+        14: {
+            name: "Lightning rod",
+            tooltip: "Reset for copper.",
+            done() { return player.cu.points.gte(new Decimal(1)) }
+        },
+        15: {
+            name: "First bit of automation",
+            tooltip: "Buy Iron Upgrade 3 or Copper Upgrade 3.",
+            done() { return hasUpgrade('i', 13) || hasUpgrade('cu', 13) }
+        },
+        21: {
+            name: "Gilded",
+            tooltip: "Reset for gold.",
+            done() { return player.g.points.gte(new Decimal(1)) }
+        },
+        22: {
+            name: "Red glow",
+            tooltip: "Reset for ruby.",
+            done() { return player.r.points.gte(new Decimal(1)) }
+        },
+        23: {
+            name: "Deep dreams",
+            tooltip: "Reset for sapphire.",
+            done() { return player.s.points.gte(new Decimal(1)) }
+        },
+        24: {
+            name: "Something smells...",
+            tooltip: "Buy Sapphire Upgrade Su.",
+            done() { return hasUpgrade('s', 12) }
+        },
+        25: {
+            name: "Compound",
+            tooltip: "Buy a level of the Sulfur Buyable.",
+            done() { return (getBuyableAmount('su', 11) > 0) }
+        },
+        31: {
+            name: "Shining bright",
+            tooltip: "Buy Sapphire Upgrade Si.",
+            done() { return hasUpgrade('s', 13) }
+        },
+        32: {
+            name: "Endgame",
+            tooltip: "Reset for emerald.",
+            done() { return player.e.points.gte(new Decimal(1)) }
+        },
+    },
+    row: "side", // Row the layer is in on the tree (0 is the first row)
+    layerShown() { return true }
+})
 addLayer("c", {
     name: "coal", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "C", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -25,7 +108,7 @@ addLayer("c", {
         if (hasUpgrade('c', 32)) mult = mult.times(upgradeEffect('c', 32))
         if (hasUpgrade('su', 11)) mult = mult.times(2)
         if (getBuyableAmount('su', 11) > 0) mult = mult.times(buyableEffect('su', 11))
-            if (hasUpgrade('si', 12)) mult = mult.times(upgradeEffect('si', 12))
+        if (hasUpgrade('si', 12)) mult = mult.times(upgradeEffect('si', 12))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -123,7 +206,7 @@ addLayer("c", {
         },
         31: {
             title: "Coal Upgrade 8",
-            description: "Increase Iron & Gold generation to 10%",
+            description: "Increase Iron & Copper generation to 10%",
             cost: new Decimal(5000000),
             unlocked() { return hasUpgrade('c', 25) && hasUpgrade('r', 13) }
         },
@@ -357,7 +440,7 @@ addLayer("g", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
-        passiveGeneration() {
+    passiveGeneration() {
         let total = 0
         if (hasUpgrade('s', 14)) total += 1
         return total
@@ -441,7 +524,7 @@ addLayer("r", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
-       passiveGeneration() {
+    passiveGeneration() {
         let total = 0
         if (hasUpgrade('s', 14)) total += 1
         return total
@@ -702,7 +785,7 @@ addLayer("si", {
             title: "Silver Upgrade 2",
             description: "2x Copper, Silver boosts Coal.",
             cost: new Decimal(10),
-             effect() {
+            effect() {
                 return player.si.points.add(1).pow(0.5)
             },
             tooltip: "Formula: Silver+1^0.5",
