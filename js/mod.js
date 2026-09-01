@@ -12,16 +12,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: `Fill in the gaps`,
+	num: "0.2.1",
+	name: `Advancements`,
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.2.1: Advancements</h3><br>
+		- Added Achievements (spoilers)<br>
+		- Fixed Coal Upgrade 8 saying it boosts Iron and Gold generation<br>
+		<br>
 	<h3>v0.2: Fill in the gaps</h3><br>
 		- Added 3 new layers<br>
 		- Added upgrades to Sapphire<br>
 		- Made many balance changes<br>
 		- Fixed some bugs<br>
+		<br>
 	<h3>v0.1.1.1: "Deep" dreams</h3><br>
 		- discord server yayayayaya<br>
 		<br>
@@ -76,7 +81,7 @@ function addedPlayerData() {
 
 // Display extra things at the top of the page
 var displayThings = [
-	`Endgame: 1 </h1>emerald</h1><br>Based by Azure Mines by berezza!`
+	`Endgame: 1 emerald<br>Based by Azure Mines by berezza!`
 ]
 
 // Determines when the game "ends"
