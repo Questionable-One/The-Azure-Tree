@@ -12,11 +12,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.1",
-	name: `Advancements`,
+	num: "0.3",
+	name: `DIAMONDS!!!`,
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.3: DIAMONDS!!!</h3><br>
+		- 4 new layers<br>
+		- Added upgrades to Emerald<br>
+		- Made more balance changes<br>
+		<br>
 	<h3>v0.2.1: Advancements</h3><br>
 		- Added Achievements (spoilers)<br>
 		- Fixed Coal Upgrade 8 saying it boosts Iron and Gold generation<br>
@@ -70,6 +75,9 @@ function getPointGen() {
 	if (hasUpgrade('i', 11)) gain = gain.times(5)
 	if (hasUpgrade('cu', 11)) gain = gain.times(1.5)
 	if (hasUpgrade('r', 11)) gain = gain.times(upgradeEffect('r', 11))
+	if (hasUpgrade('c', 35)) gain = gain.pow(1.3)
+	if (hasMilestone('a', 1)) gain = gain.times(75)
+	if (hasUpgrade('e', 13)) gain = gain.times(25)
 	return gain
 }
 
@@ -81,12 +89,12 @@ function addedPlayerData() {
 
 // Display extra things at the top of the page
 var displayThings = [
-	`Endgame: 1 emerald<br>Based by Azure Mines by berezza!`
+	`Endgame: 1 diamond<br>Based on Azure Mines by berezza!`
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.e.points.gte(new Decimal(1))
+	return player.d.points.gte(new Decimal(1))
 }
 
 
