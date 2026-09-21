@@ -1065,8 +1065,8 @@ addLayer("o", {
     resource: "opal", // Name of prestige currency
     baseResource: "amethyst", // Name of resource prestige is based on
     baseAmount() { return player.a.points }, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 2, // Prestige currency exponent
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1.1, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -1171,7 +1171,7 @@ addLayer("d", {
         }
     },
     color: "#15f0e9",
-    requires: new Decimal(50), // Can be a function that takes requirement increases into account
+    requires: new Decimal(1e10), // Can be a function that takes requirement increases into account
     resource: "diamond", // Name of prestige currency
     baseResource: "emerald", // Name of resource prestige is based on
     baseAmount() { return player.e.points }, // Get the current amount of baseResource
@@ -1179,7 +1179,6 @@ addLayer("d", {
     exponent: 0.3, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        if (hasUpgrade('cu', 21)) mult = mult.times(upgradeEffect('cu', 21))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1203,5 +1202,5 @@ addLayer("d", {
     hotkeys: [
         { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('m', 11) || hasUpgrade('d', 11) || player.d.points > 0 }
+    layerShown() { return hasUpgrade('m', 11) || hasUpgrade('d', 11) || player.d.points > 0 || player.e.points.gte(new Decimal(1e10)) }
 })
