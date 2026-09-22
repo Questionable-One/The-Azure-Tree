@@ -1065,8 +1065,8 @@ addLayer("o", {
     resource: "opal", // Name of prestige currency
     baseResource: "amethyst", // Name of resource prestige is based on
     baseAmount() { return player.a.points }, // Get the current amount of baseResource
-    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1.1, // Prestige currency exponent
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 2, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -1202,5 +1202,5 @@ addLayer("d", {
     hotkeys: [
         { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('m', 11) || hasUpgrade('d', 11) || player.d.points > 0 || player.e.points.gte(new Decimal(1e10)) }
+    layerShown() { return hasUpgrade('m', 11) || hasUpgrade('d', 11) || player.d.points > 0 }
 })
