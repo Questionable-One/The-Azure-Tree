@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
-	name: `DIAMONDS!!!`,
+	num: "0.3.1",
+	name: `Oversightful`,
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.3.1: Oversightful</h3><br>
+		- Made some balance changes and bug fixes to the game<br>
+		- Literally only made this for oversight<br>
+		<br>
 	<h3>v0.3: DIAMONDS!!!</h3><br>
 		- 4 new layers<br>
 		- Added upgrades to Emerald<br>
@@ -75,6 +79,7 @@ function getPointGen() {
 	if (hasUpgrade('i', 11)) gain = gain.times(5)
 	if (hasUpgrade('cu', 11)) gain = gain.times(1.5)
 	if (hasUpgrade('r', 11)) gain = gain.times(upgradeEffect('r', 11))
+	if (hasUpgrade('s', 11)) gain = gain.times(4)
 	if (hasUpgrade('c', 35)) gain = gain.pow(1.3)
 	if (hasMilestone('a', 1)) gain = gain.times(75)
 	if (hasUpgrade('e', 13)) gain = gain.times(25)
