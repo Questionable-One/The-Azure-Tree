@@ -368,7 +368,7 @@ addLayer("cu", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "u", description: "U: Reset for copper", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "C", description: "Shift+C: Reset for copper", onPress() { if (canReset(this.layer) && hasUpgrade('c', 22)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('c', 22) || hasUpgrade('cu', 11) || player.cu.points > 0 }
 })
@@ -465,7 +465,7 @@ addLayer("i", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "i", description: "I: Reset for iron", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "i", description: "I: Reset for iron", onPress() { if (canReset(this.layer) && hasUpgrade('c', 21)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('c', 21) || hasUpgrade('i', 11) || player.i.points > 0 }
 })
@@ -562,7 +562,7 @@ addLayer("g", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "g", description: "G: Reset for gold", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "g", description: "G: Reset for gold", onPress() { if (canReset(this.layer) && hasUpgrade('c', 25)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('c', 25) || hasUpgrade('g', 11) || player.g.points > 0 }
 })
@@ -648,7 +648,7 @@ addLayer("r", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "r", description: "R: Reset for ruby", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "r", description: "R: Reset for ruby", onPress() { if (canReset(this.layer) && hasUpgrade('g', 13)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('g', 13) || hasUpgrade('r', 11) || player.r.points > 0 }
 })
@@ -694,7 +694,7 @@ addLayer("s", {
     upgrades: {
         11: {
             title: "Sapphire Upgrade 1",
-            description: "Automate most Layer 1 upgrades.",
+            description: "Automate most Layer 1 upgrades, 4x stone gain.",
             tooltip: "we just started",
             cost: new Decimal(1),
         },
@@ -729,12 +729,12 @@ addLayer("s", {
             description: "Unlock Opal",
             cost: new Decimal(3e14),
             effect() { return player.o.unlocked = true },
-            unlocked() { return hasUpgrade('s', 15) && hasMilestone('a', 2) || player.a.unlocked }
+            unlocked() { return hasUpgrade('s', 15) && hasMilestone('a', 2) }
         },
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "s", description: "S: Reset for sapphire", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "s", description: "S: Reset for sapphire", onPress() { if (canReset(this.layer) && hasUpgrade('r', 14)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('r', 14) || hasUpgrade('s', 11) || hasUpgrade('s', 12) || hasUpgrade('s', 13) || player.s.points > 0 }
 })
@@ -769,8 +769,8 @@ addLayer("su", {
     },
     passiveGeneration() {
         let total = 0
-        if (hasUpgrade('c', 33)) total += 1
-        if (hasUpgrade('e', 13)) total += 1
+        if (hasUpgrade('c', 33)) total += 100
+        if (hasUpgrade('e', 13)) total += 100
         return total
     },
     autoUpgrade() { return hasUpgrade('e', 13) },
@@ -784,14 +784,14 @@ addLayer("su", {
     infoboxes: {
         lore: {
             title: "Layer 1: Lightness | Sulfur",
-            body() { return `This common ore has barely any usage to it. It’s often used for matches, fireworks, or gunpowder. With that knowledge, maybe this can be used to create helpful equipment to clear our large areas underground.` },
+            body() { return `This common ore has barely any usage to it. It’s often used for matches, fireworks, or gunpowder. With that knowledge, maybe this can be used to create helpful equipment to clear our large areas underground.<br><h3>This layer will not reset anything!</h3>` },
         },
     },
     buyables: {
         11: {
             title: "Sulfur Buyable",
             cost(x) { return new Decimal(1000000).times(buyableEffect(this.layer, this.id).pow(buyableEffect(this.layer, this.id))) }, // i suck at this whole formula thing
-            display() { return `1.5x Coal compounding per level.<br>Cost: ${format(this.cost())} Sulfur<br>Effect: ${format(buyableEffect(this.layer, this.id))}` },
+            display() { return `1.5x Coal compounding per level.<br>Cost: ${format(this.cost())} Sulfur<br>Effect: x${format(buyableEffect(this.layer, this.id))}` },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buyMax() { return true },
             buy() {
@@ -837,7 +837,7 @@ addLayer("su", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "l", description: "L: Reset for sulfur", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "u", description: "U: Collect sulfur", onPress() { if (canReset(this.layer) && hasUpgrade('s', 12)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('s', 12) || hasUpgrade('su', 11) || player.su.points > 0 }
 })
@@ -879,7 +879,7 @@ addLayer("si", {
     infoboxes: {
         lore: {
             title: "Layer 1: Lightness | Silver",
-            body() { return `While used for basic things like jewelry or silverware, it has magical properties that cause more damage to the undead than regular materials. It is unknown as to why this happens, however hunters find silver bullets to be the best use of silver, as plentiful amounts of them can be made and deal as much, or maybe more, damage as a sword made of silver.` },
+            body() { return `While used for basic things like jewelry or silverware, it has magical properties that cause more damage to the undead than regular materials. It is unknown as to why this happens, however hunters find silver bullets to be the best use of silver, as plentiful amounts of them can be made and deal as much, or maybe more, damage as a sword made of silver.<br><h3>This layer will reset Iron!</h3>` },
         },
     },
     upgrades: {
@@ -920,7 +920,7 @@ addLayer("si", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "v", description: "V: Reset for silver", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "v", description: "V: Reset for silver", onPress() { if (canReset(this.layer) && hasUpgrade('s', 13)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('s', 13) || hasUpgrade('si', 11) || player.si.points > 0 }
 })
@@ -976,7 +976,7 @@ addLayer("e", {
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer) && hasUpgrade('s', 15)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('s', 15) || hasUpgrade('e', 11) || player.e.points > 0 }
 })
@@ -999,6 +999,7 @@ addLayer("a", {
     exponent: 2.5, // Prestige currency exponent
     resetsNothing() { return hasUpgrade('o', 11) },
     autoPrestige() { return hasUpgrade('o', 11) },
+    canBuyMax() { return hasUpgrade('o', 12) },
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -1046,7 +1047,7 @@ addLayer("a", {
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "a", description: "A: Reset for amethyst", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "a", description: "A: Reset for amethyst", onPress() { if (canReset(this.layer) && hasUpgrade('r', 15)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('r', 15) || hasMilestone('a', 0) || player.a.points > 0 }
 })
@@ -1094,14 +1095,14 @@ addLayer("o", {
         },
         12: {
             title: "Opal Upgrade 2",
-            description: "Unlocks Amethyst upgrades.",
+            description: "Unlocks Amethyst upgrades, you can buy max Amethyst.",
             cost: new Decimal(10),
             unlocked() { return hasUpgrade(this.layer, this.id - 1) }
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "o", description: "O: Reset for opal", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "o", description: "O: Reset for opal", onPress() { if (canReset(this.layer) && hasUpgrade('s', 21)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('s', 21) || hasUpgrade('o', 11) || player.o.points > 0 }
 })
@@ -1156,7 +1157,7 @@ addLayer("m", {
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "m", description: "M: Reset for moonstone", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "m", description: "M: Reset for moonstone", onPress() { if (canReset(this.layer) && hasUpgrade('a', 12)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('a', 12) || hasUpgrade('m', 11) || player.m.points > 0 }
 })
@@ -1168,6 +1169,7 @@ addLayer("d", {
         return {
             unlocked: false,
             points: new Decimal(0),
+            total: new Decimal(0)
         }
     },
     color: "#15f0e9",
@@ -1200,7 +1202,7 @@ addLayer("d", {
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer)) doReset(this.layer) } },
+        { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer) && hasUpgrade('m', 11)) doReset(this.layer) } },
     ],
     layerShown() { return hasUpgrade('m', 11) || hasUpgrade('d', 11) || player.d.points > 0 }
 })
