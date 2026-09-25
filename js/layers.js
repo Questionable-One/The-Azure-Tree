@@ -731,6 +731,12 @@ addLayer("s", {
             effect() { return player.o.unlocked = true },
             unlocked() { return hasUpgrade('s', 15) && hasMilestone('a', 2) }
         },
+        22: {
+            title: "Sapphire Upgrade D",
+            description: "Unlocks Diamond.",
+            cost: new Decimal(1e38),
+            unlocked() { return hasUpgrade('m', 11) }
+        },
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -1144,8 +1150,7 @@ addLayer("m", {
     upgrades: {
         11: {
             title: "Moonstone Upgrade 1",
-            description: "Generate 100% of Sapphire every second, Unlocks Diamond.",
-            effect() { return player.d.unlocked = true },
+            description: "Generate 100% of Sapphire every second, Unlocks a Sapphire upgrade.",
             cost: new Decimal(1),
         },
         12: {
@@ -1204,5 +1209,5 @@ addLayer("d", {
     hotkeys: [
         { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer) && hasUpgrade('m', 11)) doReset(this.layer) } },
     ],
-    layerShown() { return hasUpgrade('m', 11) || hasUpgrade('d', 11) || player.d.points > 0 }
+    layerShown() { return hasUpgrade('s', 22) || hasUpgrade('d', 11) || player.d.points > 0 }
 })
