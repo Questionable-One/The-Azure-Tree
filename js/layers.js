@@ -197,7 +197,6 @@ addLayer("c", {
                 else
                     return new Decimal(30)
             },
-            effect() { return player.i.unlocked = true },
             unlocked() { return hasUpgrade('c', 15) }
         },
         22: {
@@ -210,7 +209,6 @@ addLayer("c", {
                 else
                     return new Decimal(30)
             },
-            effect() { return player.cu.unlocked = true },
             unlocked() { return hasUpgrade('c', 15) }
         },
         23: {
@@ -229,7 +227,6 @@ addLayer("c", {
             title: "Coal Upgrade G",
             description: "Unlock Gold.",
             cost: new Decimal(3000),
-            effect() { return player.g.unlocked = true },
             unlocked() { return hasUpgrade('c', 24) }
         },
         31: {
@@ -368,9 +365,14 @@ addLayer("cu", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "C", description: "Shift+C: Reset for copper", onPress() { if (canReset(this.layer) && hasUpgrade('c', 22)) doReset(this.layer) } },
+        {
+            key: "C",
+            description: "Shift+C: Reset for copper",
+            onPress() { if (canReset(this.layer)) doReset(this.layer) },
+            unlocked() { return hasUpgrade('c', 22) }
+        },
     ],
-    layerShown() { return hasUpgrade('c', 22) || hasUpgrade('cu', 11) || player.cu.points > 0 }
+    layerShown() { return player.cu.unlocked || hasUpgrade('c', 22) }
 })
 addLayer("i", {
     name: "iron", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -465,9 +467,9 @@ addLayer("i", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "i", description: "I: Reset for iron", onPress() { if (canReset(this.layer) && hasUpgrade('c', 21)) doReset(this.layer) } },
+        { key: "i", description: "I: Reset for iron", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('c', 21) } },
     ],
-    layerShown() { return hasUpgrade('c', 21) || hasUpgrade('i', 11) || player.i.points > 0 }
+    layerShown() { return player.i.unlocked || hasUpgrade('c', 21) }
 })
 addLayer("g", {
     name: "gold", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -528,7 +530,6 @@ addLayer("g", {
             title: "Gold Upgrade R",
             description: "Unlock Ruby.",
             cost: new Decimal(15),
-            effect() { return player.r.unlocked = true },
             unlocked() { return hasUpgrade('g', 12) }
         },
         14: {
@@ -562,9 +563,13 @@ addLayer("g", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "g", description: "G: Reset for gold", onPress() { if (canReset(this.layer) && hasUpgrade('c', 25)) doReset(this.layer) } },
+        {
+            key: "g", description: "G: Reset for gold",
+            onPress() { if (canReset(this.layer)) doReset(this.layer) },
+            unlocked() { return hasUpgrade('c', 25) }
+        },
     ],
-    layerShown() { return hasUpgrade('c', 25) || hasUpgrade('g', 11) || player.g.points > 0 }
+    layerShown() { return player.g.unlocked || hasUpgrade('c', 25) }
 })
 addLayer("r", {
     name: "ruby", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -635,22 +640,25 @@ addLayer("r", {
             title: "Ruby Upgrade S",
             description: "Unlock Sapphire.",
             cost: new Decimal(100),
-            effect() { return player.s.unlocked = true },
             unlocked() { return hasUpgrade('r', 13) }
         },
         15: {
             title: "Ruby Upgrade A",
             description: "Unlock Amethyst.",
             cost: new Decimal(1e16),
-            effect() { return player.a.unlocked = true },
             unlocked() { return hasUpgrade('e', 12) }
         },
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "r", description: "R: Reset for ruby", onPress() { if (canReset(this.layer) && hasUpgrade('g', 13)) doReset(this.layer) } },
+        {
+            key: "r",
+            description: "R: Reset for ruby",
+            onPress() { if (canReset(this.layer)) doReset(this.layer) },
+            unlocked() { return hasUpgrade('g', 13) }
+        },
     ],
-    layerShown() { return hasUpgrade('g', 13) || hasUpgrade('r', 11) || player.r.points > 0 }
+    layerShown() { return player.r.unlocked || hasUpgrade('g', 13) }
 })
 addLayer("s", {
     name: "sapphire", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -701,13 +709,11 @@ addLayer("s", {
         12: {
             title: "Sapphire Upgrade Su",
             description: "Unlock Sulfur",
-            effect() { return player.su.unlocked = true },
             cost: new Decimal(1),
         },
         13: {
             title: "Sapphire Upgrade Si",
             description: "Unlock Silver",
-            effect() { return player.si.unlocked = true },
             cost: new Decimal(1),
         },
         14: {
@@ -721,14 +727,12 @@ addLayer("s", {
             description: "Unlock Emerald",
             tooltip: "NOTE: EMERALD REQUIRES 50 SAPPHIRE",
             cost: new Decimal(50),
-            effect() { return player.e.unlocked = true },
             unlocked() { return hasUpgrade(this.layer, this.id - 1) }
         },
         21: {
             title: "Sapphire Upgrade O",
             description: "Unlock Opal",
             cost: new Decimal(3e14),
-            effect() { return player.o.unlocked = true },
             unlocked() { return hasUpgrade('s', 15) && hasMilestone('a', 2) }
         },
         22: {
@@ -740,9 +744,14 @@ addLayer("s", {
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "s", description: "S: Reset for sapphire", onPress() { if (canReset(this.layer) && hasUpgrade('r', 14)) doReset(this.layer) } },
+        {
+            key: "s",
+            description: "S: Reset for sapphire",
+            onPress() { if (canReset(this.layer)) doReset(this.layer) },
+            unlocked() { return hasUpgrade('r', 14) }
+        },
     ],
-    layerShown() { return hasUpgrade('r', 14) || hasUpgrade('s', 11) || hasUpgrade('s', 12) || hasUpgrade('s', 13) || player.s.points > 0 }
+    layerShown() { return player.s.unlocked || hasUpgrade('r', 14) }
 })
 addLayer("su", {
     name: "sulfur", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -843,9 +852,9 @@ addLayer("su", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "u", description: "U: Collect sulfur", onPress() { if (canReset(this.layer) && hasUpgrade('s', 12)) doReset(this.layer) } },
+        { key: "u", description: "U: Collect sulfur", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('s', 12) } },
     ],
-    layerShown() { return hasUpgrade('s', 12) || hasUpgrade('su', 11) || player.su.points > 0 }
+    layerShown() { return player.su.unlocked || hasUpgrade('s', 12) }
 })
 addLayer("si", {
     name: "silver", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -926,9 +935,9 @@ addLayer("si", {
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "v", description: "V: Reset for silver", onPress() { if (canReset(this.layer) && hasUpgrade('s', 13)) doReset(this.layer) } },
+        { key: "v", description: "V: Reset for silver", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('s', 13) } },
     ],
-    layerShown() { return hasUpgrade('s', 13) || hasUpgrade('si', 11) || player.si.points > 0 }
+    layerShown() { return player.si.unlocked || hasUpgrade('s', 13) }
 })
 addLayer("e", {
     name: "emerald", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -982,9 +991,9 @@ addLayer("e", {
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer) && hasUpgrade('s', 15)) doReset(this.layer) } },
+        { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('s', 15) } },
     ],
-    layerShown() { return hasUpgrade('s', 15) || hasUpgrade('e', 11) || player.e.points > 0 }
+    layerShown() { return player.e.unlocked || hasUpgrade('s', 15) }
 })
 addLayer("a", {
     name: "amethyst", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1046,16 +1055,15 @@ addLayer("a", {
         12: {
             title: "Amethyst Upgrade M",
             description: "Unlocks Moonstone, gain 100% of Opal per second.",
-            effect() { return player.m.unlocked = true },
             cost: new Decimal(15),
             unlocked() { return hasUpgrade(this.layer, this.id - 1) }
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "a", description: "A: Reset for amethyst", onPress() { if (canReset(this.layer) && hasUpgrade('r', 15)) doReset(this.layer) } },
+        { key: "a", description: "A: Reset for amethyst", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('r', 15) } },
     ],
-    layerShown() { return hasUpgrade('r', 15) || hasMilestone('a', 0) || player.a.points > 0 }
+    layerShown() { return player.a.unlocked || hasUpgrade('r', 15) }
 })
 addLayer("o", {
     name: "opal", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1108,9 +1116,9 @@ addLayer("o", {
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "o", description: "O: Reset for opal", onPress() { if (canReset(this.layer) && hasUpgrade('s', 21)) doReset(this.layer) } },
+        { key: "o", description: "O: Reset for opal", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('s', 21) } },
     ],
-    layerShown() { return hasUpgrade('s', 21) || hasUpgrade('o', 11) || player.o.points > 0 }
+    layerShown() { return player.o.unlocked || hasUpgrade('s', 21) }
 })
 addLayer("m", {
     name: "moonstone", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1162,9 +1170,9 @@ addLayer("m", {
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "m", description: "M: Reset for moonstone", onPress() { if (canReset(this.layer) && hasUpgrade('a', 12)) doReset(this.layer) } },
+        { key: "m", description: "M: Reset for moonstone", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('a', 12) } },
     ],
-    layerShown() { return hasUpgrade('a', 12) || hasUpgrade('m', 11) || player.m.points > 0 }
+    layerShown() { return player.m.unlocked || hasUpgrade('a', 12) }
 })
 addLayer("d", {
     name: "diamond", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1201,13 +1209,18 @@ addLayer("d", {
     upgrades: {
         11: {
             title: "Diamond Upgrade 1",
-            description: "SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING",
+            description: "Total diamond boosts stone gain, plus 100",
+            effect() {
+                return player[this.layer].total.add(1).pow(0.4).add(100)
+            },
+            tooltip: "Formula: Diamond+1^0.4+100",
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
             cost: new Decimal(1),
         }
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "e", description: "E: Reset for emerald", onPress() { if (canReset(this.layer) && hasUpgrade('m', 11)) doReset(this.layer) } },
+        { key: "d", description: "D: Reset for diamond", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() {return hasUpgrade('m', 11)} },
     ],
-    layerShown() { return hasUpgrade('s', 22) || hasUpgrade('d', 11) || player.d.points > 0 }
+    layerShown() { return player.d.unlocked | hasUpgrade('m', 11) }
 })
