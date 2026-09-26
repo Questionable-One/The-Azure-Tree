@@ -83,6 +83,7 @@ function getPointGen() {
 	if (hasUpgrade('c', 35)) gain = gain.pow(1.3)
 	if (hasMilestone('a', 1)) gain = gain.times(75)
 	if (hasUpgrade('e', 13)) gain = gain.times(25)
+	if (hasUpgrade('d', 11)) gain = gain.times(upgradeEffect('d', 11))
 	return gain
 }
 
@@ -94,12 +95,12 @@ function addedPlayerData() {
 
 // Display extra things at the top of the page
 var displayThings = [
-	`Endgame: 1 diamond<br>Based on Azure Mines by berezza!`
+	`Endgame: Diamond Upgrade 1<br>Based on Azure Mines by berezza!`
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.d.points.gte(new Decimal(1))
+	return hasUpgrade('d', 11)
 }
 
 
