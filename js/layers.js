@@ -598,9 +598,9 @@ addLayer("g", {
             description: "Gold boosts Coal.",
             cost: new Decimal(2000),
             effect() {
-                return player[this.layer].points.add(1).pow(0.6)
+                return player[this.layer].points.add(1).pow(0.02)
             },
-            tooltip: "Formula: Gold+1^0.6",
+            tooltip: "Formula: Gold+1^0.02",
             effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" },
             unlocked() { return hasUpgrade('g', 14) }
         },
@@ -1098,6 +1098,7 @@ addLayer("a", {
         12: {
             title: "Amethyst Upgrade M",
             description: "Unlocks Moonstone, gain 100% of Opal per second.",
+            onPurchase() { player.m.unlocked = true },
             cost: new Decimal(15),
             unlocked() { return hasUpgrade(this.layer, this.id - 1) }
         },
