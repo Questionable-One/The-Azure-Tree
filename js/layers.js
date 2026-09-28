@@ -8,7 +8,7 @@ addLayer("ach", {
         }
     },
     color: "#fbff00",
-    resource: "achievements", // Name of prestige currency
+    tooltip() { return "Achievements" },
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     infoboxes: {
         lore: {
@@ -106,6 +106,60 @@ addLayer("ach", {
     row: "side", // Row the layer is in on the tree (0 is the first row)
     layerShown() { return true }
 })
+addLayer("rec", {
+    name: "savebank", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "?", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() {
+        return {
+            unlocked: true
+        }
+    },
+    color: "#ffffff",
+    tooltip() { return "Savebank" },
+    clickables: {
+        11: {
+            display() { return "Sapphire" },
+            canClick() { return true },
+            onClick() {
+                player.s.points = new Decimal(1),
+                player.s.unlocked = true
+                player.rec.unlocked = false
+                player.tab = "none"
+            }
+        },
+        12: {
+            display() { return "Emerald" },
+            canClick() { return true },
+            onClick() {
+                player.e.points = new Decimal(1),
+                player.e.unlocked = true
+                player.rec.unlocked = false
+                player.tab = "none"
+            }
+        },
+        13: {
+            display() { return "Diamond" },
+            canClick() { return true },
+            onClick() {
+                player.d.points = new Decimal(1),
+                player.d.unlocked = true
+                player.rec.unlocked = false
+                player.tab = "none"
+            }
+        }
+    },
+    shouldNotify: false,
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    infoboxes: {
+        lore: {
+            title: "Layer ?: Bonus | Savebank",
+            body() { return `kill the layershown function i hate it i hate it this is you're faults<br>Can only be used once in a save.` },
+        },
+    },
+    row: "side", // Row the layer is in on the tree (0 is the first row)
+    layerShown() { return player.rec.unlocked  }
+})
 addLayer("c", {
     name: "coal", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "C", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -131,6 +185,7 @@ addLayer("c", {
         if (hasUpgrade('i', 14)) mult = mult.times(upgradeEffect('i', 14))
         if (hasUpgrade('cu', 14)) mult = mult.times(upgradeEffect('cu', 14))
         if (hasUpgrade('c', 32)) mult = mult.times(upgradeEffect('c', 32))
+        if (hasUpgrade('g', 15)) mult = mult.times(upgradeEffect('g', 15))
         if (hasUpgrade('su', 11)) mult = mult.times(2)
         if (getBuyableAmount('su', 11) > 0) mult = mult.times(buyableEffect('su', 11))
         if (hasUpgrade('si', 12)) mult = mult.times(upgradeEffect('si', 12))
@@ -729,18 +784,6 @@ addLayer("s", {
             cost: new Decimal(50),
             unlocked() { return hasUpgrade(this.layer, this.id - 1) }
         },
-        21: {
-            title: "Sapphire Upgrade O",
-            description: "Unlock Opal",
-            cost: new Decimal(3e14),
-            unlocked() { return hasUpgrade('s', 15) && hasMilestone('a', 2) }
-        },
-        22: {
-            title: "Sapphire Upgrade D",
-            description: "Unlocks Diamond.",
-            cost: new Decimal(1e38),
-            unlocked() { return hasUpgrade('m', 11) }
-        },
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -1041,7 +1084,7 @@ addLayer("a", {
         },
         2: {
             requirementDescription: "12 amethyst",
-            effectDescription: "Unlock Sapphire Upgrade O.",
+            effectDescription: "Unlock Opal.",
             done() { return player.a.points.gte(12) }
         }
     },
@@ -1118,7 +1161,7 @@ addLayer("o", {
     hotkeys: [
         { key: "o", description: "O: Reset for opal", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('s', 21) } },
     ],
-    layerShown() { return player.o.unlocked || hasUpgrade('s', 21) }
+    layerShown() { return player.o.unlocked || hasMilestone('a', 2) }
 })
 addLayer("m", {
     name: "moonstone", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -1158,7 +1201,7 @@ addLayer("m", {
     upgrades: {
         11: {
             title: "Moonstone Upgrade 1",
-            description: "Generate 100% of Sapphire every second, Unlocks a Sapphire upgrade.",
+            description: "Generate 100% of Sapphire every second, Unlock Diamond.",
             cost: new Decimal(1),
         },
         12: {
@@ -1220,7 +1263,7 @@ addLayer("d", {
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        { key: "d", description: "D: Reset for diamond", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() {return hasUpgrade('m', 11)} },
+        { key: "d", description: "D: Reset for diamond", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('m', 11) } },
     ],
     layerShown() { return player.d.unlocked | hasUpgrade('m', 11) }
 })
