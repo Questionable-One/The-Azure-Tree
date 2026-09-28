@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.1",
-	name: `Oversightful`,
+	num: "0.3.2",
+	name: `Recovering`,
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.3.2: Recovering</h3><br>
+		- Added a new side layer: Savebank<br>
+		- Fixed Gold Upgrade 4 not applying it's boost to Coal<br>
+		<br>
 	<h3>v0.3.1: Oversightful</h3><br>
 		- Made some balance changes and bug fixes to the game<br>
 		- Literally only made this for oversight<br>
