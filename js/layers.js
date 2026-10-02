@@ -1213,6 +1213,11 @@ addLayer("m", {
         },
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
+    doReset(resettingLayer) {
+        if (layers[resettingLayer].row > 2 && resettingLayer !== "e") {
+            layerDataReset(this.layer)
+        }
+    },
     hotkeys: [
         { key: "m", description: "M: Reset for moonstone", onPress() { if (canReset(this.layer)) doReset(this.layer) }, unlocked() { return hasUpgrade('a', 12) } },
     ],
